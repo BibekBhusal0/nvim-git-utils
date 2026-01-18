@@ -1,4 +1,4 @@
-local opts = require("nvim-git-utils").opts
+local opts = require("nvim-git-utils.opts").opts
 
 return function(message, level)
   if opts.log.enabled then

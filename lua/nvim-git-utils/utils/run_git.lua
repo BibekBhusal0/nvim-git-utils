@@ -1,4 +1,4 @@
-local opts = require("nvim-git-utils").opts
+local opts = require("nvim-git-utils.opts").opts
 local log = require("nvim-git-utils.utils.log")
 local function get_title_from_message(message)
   local title = message:match("^([^\n]*)")
