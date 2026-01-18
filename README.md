@@ -2,6 +2,10 @@
 
 Simple commands to make life easier while working with git.
 
+## Why I built this?
+
+Those commands were already present in my config so I think moving them to new plugin will make the config cleaner and also makes it easy me to share commands with otehrs.
+
 ## Features
 
 - **Interactive Commit Messages** - Beautiful popup UI for writing commit messages with:
