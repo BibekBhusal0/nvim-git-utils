@@ -107,9 +107,47 @@ local function commit_input(title, callback, initial_value)
     end
   end
 
+  local function update_hints()
+    if opts.commit_input.hints == false then
+      title_popup.border:set_text("bottom", "", "center")
+      return
+    end
+
+    local is_insert = vim.api.nvim_get_mode().mode == "i"
+    local is_title_focused = vim.api.nvim_get_current_win() == title_popup.winid
+
+    local hint_text
+    if is_insert then
+      if is_title_focused then
+        -- title focused insert
+        hint_text = " [Enter] Submit | [Tab] Switch "
+      else
+        -- body focused insert
+        hint_text = "body focused insert"
+        hint_text = " [Tab] Switch "
+      end
+    else
+      if is_title_focused then
+        -- title focused normal
+        --   hint_text = " [Enter] Submit | [Tab] Switch | [q/Escape] Close"
+        -- else
+        -- body focused normal
+        hint_text = " [Enter] Submit | [Tab] Switch | [q/Escape] Close"
+      end
+    end
+
+    title_popup.border:set_text("bottom", hint_text, "center")
+  end
+
   vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
     buffer = title_buf,
     callback = update_title,
+  })
+
+  vim.api.nvim_create_autocmd({ "ModeChanged" }, {
+    callback = function()
+      update_hints()
+    end,
   })
 
   local layout = Layout(
@@ -146,6 +184,7 @@ local function commit_input(title, callback, initial_value)
       local line = buf_lines[1] or ""
       vim.api.nvim_win_set_cursor(0, { 1, #line })
     end
+    update_hints()
   end
 
   local function focus_body(insert_mode)
@@ -156,6 +195,7 @@ local function commit_input(title, callback, initial_value)
       local last_line = buf_lines[#buf_lines] or ""
       vim.api.nvim_win_set_cursor(0, { #buf_lines, #last_line })
     end
+    update_hints()
   end
 
   local function toggle_focus()
@@ -210,10 +250,11 @@ local function commit_input(title, callback, initial_value)
   for _, buf in ipairs({ title_buf, body_buf }) do
     map(buf, "<Esc>", close, "Close")
     map(buf, "<Tab>", toggle_focus, "Toggle focus", { "n", "i" })
+    map(buf, "q", close, "Close")
   end
 
   map(title_buf, "<CR>", submit, "Submit commit", { "n", "i" })
-  map(body_buf, "<CR>", submit, "Submit commit", "n")
+  map(body_buf, "<CR>", submit, "Submit commit")
 
   layout:mount()
 
@@ -223,6 +264,7 @@ local function commit_input(title, callback, initial_value)
   end
 
   update_title()
+  update_hints()
   focus_title(true)
 end
 
