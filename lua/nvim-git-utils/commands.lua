@@ -1,12 +1,20 @@
 local run_git = require("nvim-git-utils.utils.run_git")
+local opts = require("nvim-git-utils.opts").opts
 local log = require("nvim-git-utils.utils.log")
 local commit_input = require("nvim-git-utils.utils.commit_input")
 
 local M = {}
 
+local function parseMessage(text)
+  if type(opts.commit_input.format_message) == "function" then
+    return (opts.commit_input.format_message(text))
+  end
+  return text
+end
+
 M.commit_with_message = function()
   commit_input(" Commit Changes ", function(text)
-    run_git("commit", { "-m", text }, "Commit")
+    run_git("commit", { "-m", parseMessage(text) }, "Commit")
   end)
 end
 
@@ -17,7 +25,7 @@ M.commit_all_with_message = function()
       log("Failed to add", vim.log.levels.ERROR)
       return
     end
-    run_git("commit", { "-m", text }, "Commit")
+    run_git("commit", { "-m", parseMessage(text) }, "Commit")
   end)
 end
 
@@ -33,7 +41,7 @@ M.change_last_commit_message = function()
     return
   end
   commit_input(" Change Commit Message ", function(text)
-    run_git("commit", { "--amend", "-m", text }, "Amend")
+    run_git("commit", { "--amend", "-m", parseMessage(text) }, "Amend")
   end, m)
 end
 
@@ -92,7 +100,7 @@ M.diffViewTelescopeCompareBranches = function()
   local builtin = require("telescope.builtin")
 
   builtin.git_branches(themes.get_dropdown({
-    prompt_title = "Select First Branch",
+    prompt_title = "Select Branch",
     previewer = false,
     attach_mappings = function()
       actions.select_default:replace(function(prompt_bufnr)

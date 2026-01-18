@@ -9,4 +9,5 @@ local function emojify(text)
     return text
   end
 end
+
 return emojify

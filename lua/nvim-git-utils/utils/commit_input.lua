@@ -1,4 +1,4 @@
-local TITLE_MAX_LENGTH = 72
+local opts = require("nvim-git-utils.opts").opts
 
 vim.api.nvim_set_hl(0, "CommitTitleOverLimit", { fg = "#ff5f5f", default = true })
 
@@ -94,11 +94,11 @@ local function commit_input(title, callback, initial_value)
 
     local line = lines[1] or ""
     local count = #line
-    local hl = count > TITLE_MAX_LENGTH and "CommitTitleOverLimit" or "Comment"
+    local hl = count > opts.commit_input.max_length and "CommitTitleOverLimit" or "Comment"
 
     vim.api.nvim_buf_clear_namespace(title_buf, ns_id, 0, -1)
     vim.api.nvim_buf_set_extmark(title_buf, ns_id, 0, 0, {
-      virt_text = { { string.format(" %d/%d ", count, TITLE_MAX_LENGTH), hl } },
+      virt_text = { { string.format(" %d/%d ", count, opts.commit_input.max_length), hl } },
       virt_text_pos = "right_align",
       hl_mode = "combine",
     })
