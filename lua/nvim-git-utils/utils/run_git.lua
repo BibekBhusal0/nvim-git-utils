@@ -8,7 +8,7 @@ local function run_git(cmd, args, action)
   local result = vim.system({ "git", cmd, unpack(args) }):wait()
   if result.code == 0 then
     local past_word = { Commit = "Committed", Amend = "Amended" }
-    local title = get_title_from_message(args[2])
+    local title = get_title_from_message(args[#args])
     log(string.format("%s: %s", past_word[action], title))
     return true
   else
