@@ -54,6 +54,11 @@ return {
       desc = "Diffview file history telescope",
     },
   },
+  dependencies ={
+      "MunifTanjim/nui.nvim", -- for commit input
+      "nvim-telescope/telescope.nvim", -- for diffview telescope commands
+      "sindrets/diffview.nvim", -- for diffview telescope commands
+  }
 }
 ```
 
@@ -106,7 +111,7 @@ require("nvim-git-utils").setup({
 
 ## Credits
 
-Main inspiration came from [commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim).
+Main inspiration came from [commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim) which allowed.
 
 ## Similar Plugins
 
