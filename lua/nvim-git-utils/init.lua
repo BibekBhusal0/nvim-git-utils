@@ -1,9 +1,12 @@
 local commands = require("nvim-git-utils.commands")
 
 local M = {}
+M.opts = {
+  log = { enabled = true, icon = "" },
+}
 
 M.setup = function(opts)
-  -- core.opts = vim.tbl_deep_extend("force", core.opts, opts)
+  M.opts = vim.tbl_deep_extend("force", M.opts, opts)
 
   local function create_command(name, fn)
     vim.api.nvim_create_user_command(name, fn, {})
