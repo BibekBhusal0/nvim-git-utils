@@ -108,12 +108,12 @@ local function commit_input(title, callback, initial_value)
   end
 
   local function update_hints()
-    if opts.commit_input.hints == false then
-      title_popup.border:set_text("bottom", "", "center")
+    if opts.commit_input.hints == false or not body_popup.border then
       return
     end
 
-    local is_insert = vim.api.nvim_get_mode().mode == "i"
+    local mode = vim.api.nvim_get_mode().mode
+    local is_insert = mode == "i" or mode == "ic" or mode == "ix"
     local is_title_focused = vim.api.nvim_get_current_win() == title_popup.winid
 
     local hint_text
@@ -127,16 +127,17 @@ local function commit_input(title, callback, initial_value)
         hint_text = " [Tab] Switch "
       end
     else
-      if is_title_focused then
-        -- title focused normal
-        --   hint_text = " [Enter] Submit | [Tab] Switch | [q/Escape] Close"
-        -- else
-        -- body focused normal
-        hint_text = " [Enter] Submit | [Tab] Switch | [q/Escape] Close"
-      end
+      hint_text = " [Enter] Submit | [Tab] Switch | [q/Escape] Close"
+      -- -- if is_title_focused then
+      -- title focused normal
+      --   hint_text = " [Enter] Submit | [Tab] Switch | [q/Escape] Close"
+      -- else
+      -- -- body focused normal
+      -- hint_text = " [Enter] Submit | [Tab] Switch | [q/Escape] Close"
+      -- end
     end
 
-    title_popup.border:set_text("bottom", hint_text, "center")
+    pcall(body_popup.border.set_text, body_popup.border, "bottom", hint_text, "center")
   end
 
   vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
@@ -144,11 +145,6 @@ local function commit_input(title, callback, initial_value)
     callback = update_title,
   })
 
-  vim.api.nvim_create_autocmd({ "ModeChanged" }, {
-    callback = function()
-      update_hints()
-    end,
-  })
 
   local layout = Layout(
     {
@@ -251,6 +247,11 @@ local function commit_input(title, callback, initial_value)
     map(buf, "<Esc>", close, "Close")
     map(buf, "<Tab>", toggle_focus, "Toggle focus", { "n", "i" })
     map(buf, "q", close, "Close")
+
+    vim.api.nvim_create_autocmd("ModeChanged", {
+      buffer = buf,
+      callback = update_hints,
+    })
   end
 
   map(title_buf, "<CR>", submit, "Submit commit", { "n", "i" })
@@ -264,8 +265,8 @@ local function commit_input(title, callback, initial_value)
   end
 
   update_title()
-  update_hints()
   focus_title(true)
+  update_hints()
 end
 
 return commit_input
