@@ -4,6 +4,7 @@
 Table of Contents                      *nvim-git-utils.nvim-table-of-contents*
 
 1. nvim-git-utils                         |nvim-git-utils.nvim-nvim-git-utils|
+  - Why I built this?   |nvim-git-utils.nvim-nvim-git-utils-why-i-built-this?|
   - Features                     |nvim-git-utils.nvim-nvim-git-utils-features|
   - Commands                     |nvim-git-utils.nvim-nvim-git-utils-commands|
   - Installation             |nvim-git-utils.nvim-nvim-git-utils-installation|
@@ -18,6 +19,13 @@ Table of Contents                      *nvim-git-utils.nvim-table-of-contents*
 1. nvim-git-utils                         *nvim-git-utils.nvim-nvim-git-utils*
 
 Simple commands to make life easier while working with git.
+
+
+WHY I BUILT THIS?       *nvim-git-utils.nvim-nvim-git-utils-why-i-built-this?*
+
+Those commands were already present in my config so I think moving them to new
+plugin will make the config cleaner and also makes it easy me to share commands
+with otehrs.
 
 
 FEATURES                         *nvim-git-utils.nvim-nvim-git-utils-features*
