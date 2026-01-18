@@ -1,33 +1,137 @@
-# nvim-plugin-template
+# nvim-git-utils
 
-Neovim plugin template; includes automatic documentation generation from README, integration tests with Busted, and linting with Stylua
+Simple commands to make life easier while working with git.
 
-## Usage
+## Features
 
-1. Click `use this template` button generate a repo on your github.
-2. Clone your plugin repo. Open terminal then cd plugin directory.
-3. Run `python3 rename.py your-plugin-name`. This will replace all `nvim-plugin-template` to your `plugin-name`. 
-   Then it will prompt you input `y` or `n` to remove example codes in `init.lua` and
-   `test/plugin_spec.lua`. If you are familiar this repo just input `y`. If you are looking at this template for the first time I suggest you inspect the contents. After this step `rename.py` will also auto-remove.
+- **Interactive Commit Messages** - Beautiful popup UI for writing commit messages with:
+  - Title/body split layout
+  - Character counter
+  - Visual warning when over limit
+  - Keyboard hints
+  - Automatic emojification (with devmoji)
+- **Quick Staging & Commit** - Stage all changes and commit in one command
+- **Amend Commits** - Easily change the last commit message
+- **Open Changed Files** - Load all modified and untracked files into buffers
+- **Telescope and Diffview Integration** - Browse file history and compare branches via telescope and diffview
 
-Now you have a clean plugin environment. Enjoy!
+## Commands
 
-## Format
+| Command                                | Description                          |
+| -------------------------------------- | ------------------------------------ |
+| `:GitCommit`                           | Commit staged changes with a message |
+| `:GitAddCommit`                        | Stage all changes and commit         |
+| `:GitChangeLastCommit`                 | Amend the last commit message        |
+| `:GitChanges` / `:GitOpenChangedFiles` | Open all changed files into buffers  |
+| `:DiffviewFileHistoryTelescope`        | Select a file and view its history   |
+| `:DiffviewCompareBranchesTelescope`    | Compare branches in diffview         |
 
-The CI uses `stylua` to format the code; customize the formatting by editing `.stylua.toml`.
+## Installation
 
-## Test
+Using LazyVim:
 
-See [Running tests locally](https://github.com/nvim-neorocks/nvim-busted-action?tab=readme-ov-file#running-tests-locally)
+```lua
+return {
+  "bibekbhusal0/nvim-git-utils",
+  opts = {}, -- Your config here, see down for options and default settings
+  cmd = {
+    "GitAddCommit",
+    "GitCommit",
+    "GitChangeLastCommit",
+    "GitChanges",
+    "DiffviewCompareBranchesTelescope",
+    "DiffviewFileHistoryTelescope",
+  },
+  keys = { -- Set custom keymaps for your liking
+    { "<leader>gc", ":GitAddCommit<CR>", desc = "Git add and commit" },
+    { "<leader>gC", ":GitCommit<CR>", desc = "Git commit" },
+    { "<leader>ge", ":GitChangeLastCommit<CR>", desc = "Git change last commit message" },
+    { "<leader>gg", ":GitChanges<CR>", desc = "Git open changed files" },
+    { "<leader>gdb", ":DiffviewCompareBranchesTelescope<CR>", desc = "Diffview compare branches" },
+    {
+      "<leader>gdF",
+      ":DiffviewFileHistoryTelescope<CR>",
+      desc = "Diffview file history telescope",
+    },
+  },
+}
+```
 
-## CI
+## Default Values
 
-- Auto generates doc from README.
-- Runs the [nvim-busted-action](https://github.com/nvim-neorocks/nvim-busted-action) for test.
-- Lints with `stylua`.
+```lua
+require("nvim-git-utils").setup({
+  log = { enabled = true, icon = "" },
+  commit_input = {
+    max_length = 72,
+    format_message = require("nvim-git-utils.utils.emojify"), -- Uses devmoji to add emojis to commit messages
+    hints = true,
+  },
+})
+```
 
-## More
+## Setup
 
-To see this template in action, take a look at my other plugins.
+Configure nvim-git-utils with the following options:
 
-## License MIT
+```lua
+require("nvim-git-utils").setup({
+  -- Logging configuration
+  log = {
+    enabled = true, -- Enable/disable notifications. Set to false to disable all log messages
+    icon = "", -- Icon prefix displayed before log messages in notifications
+  },
+
+  -- Commit input popup configuration
+  commit_input = {
+    max_length = 72, -- Maximum character limit for commit title
+                     -- Set to 0 or nil to disable the character counter entirely
+
+    -- Function to transform commit message before committing
+    -- Set to nil to disable message formatting (returns message as-is)
+    -- Example with devmoji (this function is also available at require("nvim-git-utils.utils.emojify")):
+    -- format_message = function(msg)
+    --   local handle = io.popen("devmoji --text " .. vim.fn.shellescape(msg))
+    --   local result = handle:read("*a")
+    --   handle:close()
+    --   return result:match("^%s*(.-)%s*$")
+    -- end,
+    format_message = nil,
+
+    hints = true, -- Show keyboard shortcuts hints at the bottom of the popup
+                  -- Set to false to hide the hints bar
+  },
+})
+```
+
+## Credits
+
+Main inspiration came from [commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim).
+
+## Similar Plugins
+
+[commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim)
+
+### How is this different from commitpad?
+
+Commitpad is a simple and nice plugin for creating new commit messages. This plugin has additional functionalities like:
+
+- Changing the last commit message
+- Staging all files and committing in one step
+- Integration with devmoji
+
+Commitpad has a nice UI for committing but lacks customization. This plugin allows customizing:
+
+- Max character length for commit titles
+- Hiding keyboard hints
+
+## Dependencies
+
+- [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - UI components
+- [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) - Fuzzy finder
+- [diffview.nvim](https://github.com/sindrets/diffview.nvim) - Diff viewer
+- [devmoji](https://github.com/folke/devmoji) (optional) - Emojify your commit messages
+
+## License
+
+MIT
