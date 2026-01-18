@@ -143,7 +143,8 @@ Configure nvim-git-utils with the following options:
 CREDITS                           *nvim-git-utils.nvim-nvim-git-utils-credits*
 
 Main inspiration came from commitpad.nvim
-<https://github.com/Sengoku11/commitpad.nvim> which allowed.
+<https://github.com/Sengoku11/commitpad.nvim> which allowed creating nice UI
+while creating new commit message with body.
 
 
 SIMILAR PLUGINS           *nvim-git-utils.nvim-nvim-git-utils-similar-plugins*
