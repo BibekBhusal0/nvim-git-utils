@@ -58,15 +58,14 @@ local function commit_input(title, callback, initial_value)
     focusable = true,
     bufnr = title_buf,
     border = {
-      style = "single",
-      title = title,
-      title_pos = "center",
+      style = "rounded",
+      text = { top = title, top_align = "center" },
     },
   })
 
   local body_popup = Popup({
     border = {
-      style = "single",
+      style = "rounded",
       text = { top = " Commit Body ", top_align = "center" },
     },
     enter = false,
