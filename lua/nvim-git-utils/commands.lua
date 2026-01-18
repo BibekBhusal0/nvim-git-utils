@@ -1,16 +1,17 @@
 local run_git = require("nvim-git-utils.utils.run_git")
 local log = require("nvim-git-utils.utils.log")
+local commit_input = require("nvim-git-utils.utils.commit_input")
 
 local M = {}
 
 M.commit_with_message = function()
-  require("utils.commit_input")(" Commit Changes ", function(text)
+  commit_input(" Commit Changes ", function(text)
     run_git("commit", { "-m", text }, "Commit")
   end)
 end
 
 M.commit_all_with_message = function()
-  require("utils.commit_input")(" Add and Commit ", function(text)
+  commit_input(" Add and Commit ", function(text)
     local result = vim.system({ "git", "add", "." }):wait()
     if result.code ~= 0 then
       log("Failed to add", vim.log.levels.ERROR)
@@ -31,7 +32,7 @@ M.change_last_commit_message = function()
   if not m then
     return
   end
-  require("utils.commit_input")(" Change Commit Message ", function(text)
+  commit_input(" Change Commit Message ", function(text)
     run_git("commit", { "--amend", "-m", text }, "Amend")
   end, m)
 end
@@ -59,7 +60,7 @@ M.open_changed_files = function()
     local first_file = result:match("[^\r\n]+")
     vim.cmd("edit " .. vim.fn.fnameescape(first_file))
   else
-    log("No changed files to open." , vim.log.levels.WARN)
+    log("No changed files to open.", vim.log.levels.WARN)
   end
 end
 
@@ -99,7 +100,7 @@ M.diffViewTelescopeCompareBranches = function()
         local selections = picker:get_multi_selection()
         actions.close(prompt_bufnr)
         if #selections > 2 then
-          log("Must select 1 or 2 branches",vim.log.levels.WARN )
+          log("Must select 1 or 2 branches", vim.log.levels.WARN)
           return
         end
         local old = #selections == 0 and action_state.get_selected_entry().ordinal

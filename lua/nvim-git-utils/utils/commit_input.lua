@@ -1,16 +1,15 @@
-local Popup = require "nui.popup"
-local Layout = require "nui.layout"
-
 local TITLE_MAX_LENGTH = 72
 
 vim.api.nvim_set_hl(0, "CommitTitleOverLimit", { fg = "#ff5f5f", default = true })
 
 local function commit_input(title, callback, initial_value)
+  local Popup = require("nui.popup")
+  local Layout = require("nui.layout")
   local initial_title = ""
   local initial_body = ""
 
   if initial_value then
-    local split_idx = initial_value:find "\n"
+    local split_idx = initial_value:find("\n")
     if split_idx then
       initial_title = initial_value:sub(1, split_idx - 1)
       initial_body = initial_value:sub(split_idx + 1) or ""
@@ -55,7 +54,7 @@ local function commit_input(title, callback, initial_value)
     initial_body ~= "" and vim.split(initial_body, "\n", { plain = true }) or { "" }
   )
 
-  local title_popup = Popup {
+  local title_popup = Popup({
     border = {
       style = "single",
       text = { title, top_align = "center" },
@@ -63,9 +62,9 @@ local function commit_input(title, callback, initial_value)
     enter = true,
     focusable = true,
     bufnr = title_buf,
-  }
+  })
 
-  local body_popup = Popup {
+  local body_popup = Popup({
     border = {
       style = "single",
       text = { top = " Commit Body ", top_align = "center" },
@@ -73,9 +72,9 @@ local function commit_input(title, callback, initial_value)
     enter = false,
     focusable = true,
     bufnr = body_buf,
-  }
+  })
 
-  local ns_id = vim.api.nvim_create_namespace "commitpad_counter"
+  local ns_id = vim.api.nvim_create_namespace("commitpad_counter")
 
   local function update_title()
     if not vim.api.nvim_buf_is_valid(title_buf) then
@@ -132,14 +131,14 @@ local function commit_input(title, callback, initial_value)
     end
     if prev_win and vim.api.nvim_win_is_valid(prev_win) then
       pcall(vim.api.nvim_set_current_win, prev_win)
-      pcall(vim.api.nvim_feedkeys, vim.keycode "<Esc>", "n", false)
+      pcall(vim.api.nvim_feedkeys, vim.keycode("<Esc>"), "n", false)
     end
   end
 
   local function focus_title(insert_mode)
     vim.api.nvim_set_current_win(title_popup.winid)
     if insert_mode then
-      vim.cmd "startinsert"
+      vim.cmd("startinsert")
       local buf_lines = vim.api.nvim_buf_get_lines(title_buf, 0, -1, false)
       local line = buf_lines[1] or ""
       vim.api.nvim_win_set_cursor(0, { 1, #line })
@@ -149,7 +148,7 @@ local function commit_input(title, callback, initial_value)
   local function focus_body(insert_mode)
     vim.api.nvim_set_current_win(body_popup.winid)
     if insert_mode then
-      vim.cmd "startinsert"
+      vim.cmd("startinsert")
       local buf_lines = vim.api.nvim_buf_get_lines(body_buf, 0, -1, false)
       local last_line = buf_lines[#buf_lines] or ""
       vim.api.nvim_win_set_cursor(0, { #buf_lines, #last_line })
@@ -205,7 +204,7 @@ local function commit_input(title, callback, initial_value)
     )
   end
 
-  for _, buf in ipairs { title_buf, body_buf } do
+  for _, buf in ipairs({ title_buf, body_buf }) do
     map(buf, "<Esc>", close, "Close")
     map(buf, "<Tab>", toggle_focus, "Toggle focus", { "n", "i" })
   end
