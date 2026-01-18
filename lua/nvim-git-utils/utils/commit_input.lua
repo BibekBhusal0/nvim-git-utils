@@ -1,8 +1,7 @@
-local opts = require("nvim-git-utils.opts").opts
-
 vim.api.nvim_set_hl(0, "CommitTitleOverLimit", { fg = "#ff5f5f", default = true })
 
 local function commit_input(title, callback, initial_value)
+  local opts = require("nvim-git-utils.opts").opts
   local Popup = require("nui.popup")
   local Layout = require("nui.layout")
   local initial_title = ""
@@ -54,7 +53,7 @@ local function commit_input(title, callback, initial_value)
     initial_body ~= "" and vim.split(initial_body, "\n", { plain = true }) or { "" }
   )
 
-    local title_popup = Popup({
+  local title_popup = Popup({
     enter = true,
     focusable = true,
     bufnr = title_buf,
@@ -95,14 +94,18 @@ local function commit_input(title, callback, initial_value)
 
     local line = lines[1] or ""
     local count = #line
-    local hl = count > opts.commit_input.max_length and "CommitTitleOverLimit" or "Comment"
+    local max_length = opts.commit_input.max_length
+    local show_counter = max_length and max_length > 0
 
     vim.api.nvim_buf_clear_namespace(title_buf, ns_id, 0, -1)
-    vim.api.nvim_buf_set_extmark(title_buf, ns_id, 0, 0, {
-      virt_text = { { string.format(" %d/%d ", count, opts.commit_input.max_length), hl } },
-      virt_text_pos = "right_align",
-      hl_mode = "combine",
-    })
+    if show_counter then
+      local hl = count > max_length and "CommitTitleOverLimit" or "Comment"
+      vim.api.nvim_buf_set_extmark(title_buf, ns_id, 0, 0, {
+        virt_text = { { string.format(" %d/%d ", count, max_length), hl } },
+        virt_text_pos = "right_align",
+        hl_mode = "combine",
+      })
+    end
   end
 
   vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
