@@ -111,7 +111,7 @@ require("nvim-git-utils").setup({
 
 ## Credits
 
-Main inspiration came from [commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim) which allowed.
+Main inspiration came from [commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim) which allowed creating nice UI while creating new commit message with body.
 
 ## Similar Plugins
 
