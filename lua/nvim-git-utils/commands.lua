@@ -1,6 +1,67 @@
 local run_git = require("nvim-git-utils.utils.run_git")
 
 local M = {}
+
+M.commit_with_message = function()
+  require("utils.commit_input")(" Commit Changes ", function(text)
+    run_git("commit", { "-m", text }, "Commit")
+  end)
+end
+
+M.commit_all_with_message = function()
+  require("utils.commit_input")(" Add and Commit ", function(text)
+    local result = vim.system({ "git", "add", "." }):wait()
+    if result.code ~= 0 then
+      vim.notify(string.format("%s Failed to add", " "), vim.log.levels.ERROR)
+      return
+    end
+    run_git("commit", { "-m", text }, "Commit")
+  end)
+end
+
+M.change_last_commit_message = function()
+  local handle = io.popen("git log -1 --pretty=%B")
+  if not handle then
+    return
+  end
+  local message = handle:read("*a")
+  handle:close()
+  local m = message:match("^%s*(.-)%s*$")
+  if not m then
+    return
+  end
+  require("utils.commit_input")(" Change Commit Message ", function(text)
+    run_git("commit", { "--amend", "-m", text }, "Amend")
+  end, m)
+end
+
+M.open_changed_files = function()
+  -- Get the list of changed and untracked files from git
+  local handle = io.popen("git ls-files --modified --others --exclude-standard")
+  if not handle then
+    return
+  end
+  local result = handle:read("*a")
+  handle:close()
+
+  local count = 0
+  for file in result:gmatch("[^\r\n]+") do
+    -- Check if file exists (prevents errors on deleted files)
+    if vim.fn.filereadable(file) == 1 then
+      vim.cmd("badd " .. vim.fn.fnameescape(file))
+      count = count + 1
+    end
+  end
+
+  if count > 0 then
+    print("Opened " .. count .. " changed files into buffers.")
+    local first_file = result:match("[^\r\n]+")
+    vim.cmd("edit " .. vim.fn.fnameescape(first_file))
+  else
+    print("No changed files to open.")
+  end
+end
+
 M.diffViewTelescopeFileHistory = function()
   local actions = require("telescope.actions")
   local action_state = require("telescope.actions.state")
@@ -53,66 +114,6 @@ M.diffViewTelescopeCompareBranches = function()
       return true
     end,
   }))
-end
-
-M.commit_with_message = function()
-  require("utils.commit_input")(" Commit Changes ", function(text)
-    run_git("commit", { "-m", text }, "Commit")
-  end)
-end
-
-M.commit_all_with_message = function()
-  require("utils.commit_input")(" Add and Commit ", function(text)
-    local result = vim.system({ "git", "add", "." }):wait()
-    if result.code ~= 0 then
-      vim.notify(string.format("%s Failed to add", " "), vim.log.levels.ERROR)
-      return
-    end
-    run_git("commit", { "-m", text }, "Commit")
-  end)
-end
-
-M.change_last_commit_message = function()
-  local handle = io.popen("git log -1 --pretty=%B")
-  if not handle then
-    return
-  end
-  local message = handle:read("*a")
-  handle:close()
-  local m = message:match("^%s*(.-)%s*$")
-  if not m then
-    return
-  end
-  require("utils.commit_input")(" Change Commit Message ", function(text)
-    run_git("commit", { "--amend", "-m", text }, "Amend")
-  end, m)
-end
-
-M.Open_changed_files = function()
-  -- Get the list of changed and untracked files from git
-  local handle = io.popen("git ls-files --modified --others --exclude-standard")
-  if not handle then
-    return
-  end
-  local result = handle:read("*a")
-  handle:close()
-
-  local count = 0
-  for file in result:gmatch("[^\r\n]+") do
-    -- Check if file exists (prevents errors on deleted files)
-    if vim.fn.filereadable(file) == 1 then
-      vim.cmd("badd " .. vim.fn.fnameescape(file))
-      count = count + 1
-    end
-  end
-
-  if count > 0 then
-    print("Opened " .. count .. " changed files into buffers.")
-    local first_file = result:match("[^\r\n]+")
-    vim.cmd("edit " .. vim.fn.fnameescape(first_file))
-  else
-    print("No changed files to open.")
-  end
 end
 
 return M
