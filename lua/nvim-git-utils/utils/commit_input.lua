@@ -54,14 +54,15 @@ local function commit_input(title, callback, initial_value)
     initial_body ~= "" and vim.split(initial_body, "\n", { plain = true }) or { "" }
   )
 
-  local title_popup = Popup({
-    border = {
-      style = "single",
-      text = { title, top_align = "center" },
-    },
+    local title_popup = Popup({
     enter = true,
     focusable = true,
     bufnr = title_buf,
+    border = {
+      style = "single",
+      title = title,
+      title_pos = "center",
+    },
   })
 
   local body_popup = Popup({
