@@ -145,7 +145,6 @@ local function commit_input(title, callback, initial_value)
     callback = update_title,
   })
 
-
   local layout = Layout(
     {
       relative = "editor",
