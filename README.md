@@ -2,9 +2,9 @@
 
 Simple commands to make life easier while working with git.
 
-## Why I built this?
+## Why I Built This?
 
-Those commands were already present in my config so I think moving them to new plugin will make the config cleaner and also makes it easy for me to share commands with otehrs.
+Those commands were already present in my config so I think moving them to new plugin will make the config cleaner and makes it easy for me to share commands with others.
 
 ## Features
 
@@ -17,6 +17,7 @@ Those commands were already present in my config so I think moving them to new p
 - **Quick Staging & Commit** - Stage all changes and commit in one command
 - **Amend Commits** - Easily change the last commit message
 - **Open Changed Files** - Load all modified and untracked files into buffers
+- **Open File in browser** - Quickly open current buffer into browser
 - **Telescope and Diffview Integration** - Browse file history and compare branches via telescope and diffview
 
 ## Commands
@@ -27,6 +28,7 @@ Those commands were already present in my config so I think moving them to new p
 | `:GitAddCommit`                        | Stage all changes and commit         |
 | `:GitChangeLastCommit`                 | Amend the last commit message        |
 | `:GitChanges` / `:GitOpenChangedFiles` | Open all changed files into buffers  |
+| `:GitOpen`                             | Open current file in browser         |
 | `:DiffviewFileHistoryTelescope`        | Select a file and view its history   |
 | `:DiffviewCompareBranchesTelescope`    | Compare branches in diffview         |
 
@@ -43,6 +45,7 @@ return {
     "GitCommit",
     "GitChangeLastCommit",
     "GitChanges",
+    "GitOpen",
     "DiffviewCompareBranchesTelescope",
     "DiffviewFileHistoryTelescope",
   },
@@ -51,6 +54,7 @@ return {
     { "<leader>gC", ":GitCommit<CR>", desc = "Git commit" },
     { "<leader>ge", ":GitChangeLastCommit<CR>", desc = "Git change last commit message" },
     { "<leader>gg", ":GitChanges<CR>", desc = "Git open changed files" },
+    { "<leader>gg", ":GitOpen<CR>", desc = "Git open curret file in browser" },
     { "<leader>gdb", ":DiffviewCompareBranchesTelescope<CR>", desc = "Diffview compare branches" },
     {
       "<leader>gdF",
@@ -116,6 +120,8 @@ require("nvim-git-utils").setup({
 ## Credits
 
 Main inspiration came from [commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim) which allowed creating nice UI while creating new commit message with body.
+
+[browser.nvim](https://github.com/lalitmee/browse.nvim)
 
 ## Similar Plugins
 
