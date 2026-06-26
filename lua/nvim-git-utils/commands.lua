@@ -67,6 +67,23 @@ M.open_changed_files = function()
     log("Opened " .. count .. " changed files into buffers.")
     local first_file = result:match("[^\r\n]+")
     vim.cmd("edit " .. vim.fn.fnameescape(first_file))
+
+    if
+      vim.fn.filereadable(first_file) == 1
+      and vim.fn.systemlist("git diff --name-only -- " .. vim.fn.shellescape(first_file))[1]
+    then
+      local output = vim.fn.systemlist("git diff --unified=0 -- " .. vim.fn.shellescape(first_file))
+      for _, l in ipairs(output) do
+        local line = l:match("^@@ .+%+(%d+)")
+        if line then
+          vim.api.nvim_win_set_cursor(0, { tonumber(line), 0 })
+          vim.schedule(function()
+            vim.cmd("normal! zz")
+          end)
+          break
+        end
+      end
+    end
   else
     log("No changed files to open.", vim.log.levels.WARN)
   end
