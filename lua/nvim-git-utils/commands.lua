@@ -22,21 +22,23 @@ M.open_file_in_browser = function()
   local open_browser = require("nvim-git-utils.utils.open_browser")
   local file = vim.fn.expand("%:p")
   if file == "" then
+    log("No file open.", vim.log.levels.WARN)
     return
   end
 
   local file_dir = vim.fn.fnamemodify(file, ":h")
-
   local is_git_repo = vim.fn.systemlist(
     "git -C " .. vim.fn.shellescape(file_dir) .. " rev-parse --is-inside-work-tree"
   )[1]
   if is_git_repo ~= "true" then
+    log("Current file is not inside a git repository.", vim.log.levels.WARN)
     return
   end
 
   local root =
     vim.fn.systemlist("git -C " .. vim.fn.shellescape(file_dir) .. " rev-parse --show-toplevel")[1]
   if not root or root == "" then
+    log("Git Root Not found", vim.log.levels.ERROR)
     return
   end
 
@@ -49,6 +51,7 @@ M.open_file_in_browser = function()
   local remote =
     vim.fn.systemlist("git -C " .. vim.fn.shellescape(root) .. " remote get-url origin")[1]
   if not remote or remote == "" then
+    log("Could not find remote origin.", vim.log.levels.ERROR)
     return
   end
 
@@ -56,6 +59,7 @@ M.open_file_in_browser = function()
   if relpath:sub(1, #root + 1) == root .. "/" then
     relpath = relpath:sub(#root + 2)
   else
+    log("File is not under git root.", vim.log.levels.WARN)
     return
   end
 
@@ -77,6 +81,7 @@ M.open_file_in_browser = function()
     url = remote_url .. "/blob/" .. branch .. "/" .. relpath
   end
 
+  log("Opening file in browser.", vim.log.levels.INFO)
   open_browser(url)
 end
 

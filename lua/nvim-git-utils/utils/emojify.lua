@@ -1,5 +1,8 @@
+local log = require("nvim-git-utils.utils.log")
+
 local function emojify(text)
   if not vim.fn.executable("devmoji") == 1 then
+    log("Devmoji executable not found", vim.log.levels.ERROR)
     return text
   end
 
