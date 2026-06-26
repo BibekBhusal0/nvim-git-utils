@@ -1,4 +1,8 @@
 local function emojify(text)
+  if not vim.fn.executable("devmoji") == 1 then
+    return text
+  end
+
   local handle = io.popen("devmoji --text " .. vim.fn.shellescape(text))
   if handle then
     local emojified_text = handle:read("*a")
