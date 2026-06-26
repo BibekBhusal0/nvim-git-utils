@@ -14,6 +14,7 @@ M.setup = function(o)
   create_command("GitChangeLastCommit", commands.change_last_commit_message)
   create_command("GitOpenChangedFiles", commands.open_changed_files)
   create_command("GitChanges", commands.open_changed_files)
+  create_command("GitOpen", commands.open_file_in_browser)
   create_command("DiffviewFileHistoryTelescope", commands.diffViewTelescopeFileHistory)
   create_command("DiffviewCompareBranchesTelescope", commands.diffViewTelescopeCompareBranches)
 end

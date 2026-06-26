@@ -18,6 +18,68 @@ M.commit_with_message = function()
   end)
 end
 
+M.open_file_in_browser = function()
+  local open_browser = require("nvim-git-utils.utils.open_browser")
+  local file = vim.fn.expand("%:p")
+  if file == "" then
+    return
+  end
+
+  local file_dir = vim.fn.fnamemodify(file, ":h")
+
+  local is_git_repo = vim.fn.systemlist(
+    "git -C " .. vim.fn.shellescape(file_dir) .. " rev-parse --is-inside-work-tree"
+  )[1]
+  if is_git_repo ~= "true" then
+    return
+  end
+
+  local root =
+    vim.fn.systemlist("git -C " .. vim.fn.shellescape(file_dir) .. " rev-parse --show-toplevel")[1]
+  if not root or root == "" then
+    return
+  end
+
+  local branch =
+    vim.fn.systemlist("git -C " .. vim.fn.shellescape(root) .. " branch --show-current")[1]
+  if branch == nil or branch == "" then
+    branch = vim.fn.systemlist("git -C " .. vim.fn.shellescape(root) .. " rev-parse HEAD")[1]
+  end
+
+  local remote =
+    vim.fn.systemlist("git -C " .. vim.fn.shellescape(root) .. " remote get-url origin")[1]
+  if not remote or remote == "" then
+    return
+  end
+
+  local relpath = file
+  if relpath:sub(1, #root + 1) == root .. "/" then
+    relpath = relpath:sub(#root + 2)
+  else
+    return
+  end
+
+  local remote_url = remote:gsub("%.git$", "")
+  if remote_url:match("^git@") then
+    remote_url = remote_url:gsub("^git@", "https://"):gsub(":", "/", 1)
+  elseif remote_url:match("^ssh://git@") then
+    remote_url = remote_url:gsub("^ssh://git@", "https://"):gsub(":", "/", 1)
+  end
+
+  local url
+  if remote_url:match("github%.com") then
+    url = remote_url .. "/blob/" .. branch .. "/" .. relpath
+  elseif remote_url:match("gitlab%.com") then
+    url = remote_url .. "/-/blob/" .. branch .. "/" .. relpath
+  elseif remote_url:match("codeberg%.org") or remote_url:match("forgejo") then
+    url = remote_url .. "/src/branch/" .. branch .. "/" .. relpath
+  else
+    url = remote_url .. "/blob/" .. branch .. "/" .. relpath
+  end
+
+  open_browser(url)
+end
+
 M.commit_all_with_message = function()
   commit_input(" Add and Commit ", function(text)
     local result = vim.system({ "git", "add", "." }):wait()
