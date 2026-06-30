@@ -2,6 +2,7 @@ local run_git = require("nvim-git-utils.utils.run_git")
 local opts = require("nvim-git-utils.opts").opts
 local log = require("nvim-git-utils.utils.log")
 local commit_input = require("nvim-git-utils.utils.commit_input")
+local ai_commit = require("nvim-git-utils.utils.ai_commit")
 
 local M = {}
 
@@ -175,6 +176,47 @@ M.diffViewTelescopeFileHistory = function()
       return true
     end,
   }))
+end
+
+M.ai_commit_with_message = function()
+  local diff = ai_commit.get_diff("staged")
+  if not diff then
+    log("No changes detected to commit", vim.log.levels.WARN)
+    return
+  end
+
+  log("Generating AI commit message...", vim.log.levels.INFO)
+  ai_commit.generate(diff, function(message)
+    if not message then
+      return
+    end
+    commit_input(" AI Commit ", function(text)
+      run_git("commit", { "-m", parseMessage(text) }, "Commit")
+    end, message)
+  end)
+end
+
+M.ai_commit_all_with_message = function()
+  local diff = ai_commit.get_diff("all")
+  if not diff then
+    log("No changes detected to commit", vim.log.levels.WARN)
+    return
+  end
+
+  log("Generating AI commit message...", vim.log.levels.INFO)
+  ai_commit.generate(diff, function(message)
+    if not message then
+      return
+    end
+    commit_input(" AI Commit ", function(text)
+      local result = vim.system({ "git", "add", "." }):wait()
+      if result.code ~= 0 then
+        log("Failed to stage all changes", vim.log.levels.ERROR)
+        return
+      end
+      run_git("commit", { "-m", parseMessage(text) }, "Commit")
+    end, message)
+  end)
 end
 
 M.diffViewTelescopeCompareBranches = function()
