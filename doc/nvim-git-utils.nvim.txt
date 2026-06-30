@@ -1,10 +1,11 @@
-*nvim-git-utils.nvim.txt*     For NVIM v0.8.0     Last change: 2026 January 18
+*nvim-git-utils.nvim.txt*
+                                  For NVIM v0.8.0    Last change: 2026 June 30
 
 ==============================================================================
 Table of Contents                      *nvim-git-utils.nvim-table-of-contents*
 
 1. nvim-git-utils                         |nvim-git-utils.nvim-nvim-git-utils|
-  - Why I built this?   |nvim-git-utils.nvim-nvim-git-utils-why-i-built-this?|
+  - Why I Built This?   |nvim-git-utils.nvim-nvim-git-utils-why-i-built-this?|
   - Features                     |nvim-git-utils.nvim-nvim-git-utils-features|
   - Commands                     |nvim-git-utils.nvim-nvim-git-utils-commands|
   - Installation             |nvim-git-utils.nvim-nvim-git-utils-installation|
@@ -24,8 +25,8 @@ Simple commands to make life easier while working with git.
 WHY I BUILT THIS?       *nvim-git-utils.nvim-nvim-git-utils-why-i-built-this?*
 
 Those commands were already present in my config so I think moving them to new
-plugin will make the config cleaner and also makes it easy for me to share
-commands with otehrs.
+plugin will make the config cleaner and makes it easy for me to share commands
+with others.
 
 
 FEATURES                         *nvim-git-utils.nvim-nvim-git-utils-features*
@@ -46,31 +47,29 @@ FEATURES                         *nvim-git-utils.nvim-nvim-git-utils-features*
 
 COMMANDS                         *nvim-git-utils.nvim-nvim-git-utils-commands*
 
-  -----------------------------------------------------------------------
-  Command                              Description
-  ------------------------------------ ----------------------------------
-  :GitCommit                           Commit staged changes with a
-                                       message
+  -------------------------------------------------------------------------
+  Command                             Description
+  ----------------------------------- -------------------------------------
+  :GitCommit                          Commit staged changes with a message
 
-  :GitAddCommit                        Stage all changes and commit
+  :GitAddCommit                       Stage all changes and commit
 
-  :GitChangeLastCommit                 Amend the last commit message
+  :GitChangeLastCommit                Amend the last commit message
 
-  :GitAICommit                         AI-generate commit message from
-                                       staged diff
+  :GitAICommit                        AI-generate commit message from
+                                      staged diff
 
-  :GitAIAddCommit                      Stage all, then AI-generate commit
-                                       message
+  :GitAIAddCommit                     Stage all, then AI-generate commit
+                                      message
 
-  :GitChanges / :GitOpenChangedFiles   Open all changed files into
-                                       buffers
+  :GitChanges / :GitOpenChangedFiles  Open all changed files into buffers
 
-  :GitOpen                             Open current file in browser
+  :GitOpen                            Open current file in browser
 
-  :DiffviewFileHistoryTelescope        Select a file and view its history
+  :DiffviewFileHistoryTelescope       Select a file and view its history
 
-  :DiffviewCompareBranchesTelescope    Compare branches in diffview
-  -----------------------------------------------------------------------
+  :DiffviewCompareBranchesTelescope   Compare branches in diffview
+  -------------------------------------------------------------------------
 
 INSTALLATION                 *nvim-git-utils.nvim-nvim-git-utils-installation*
 
@@ -180,6 +179,8 @@ Main inspiration came from commitpad.nvim
 <https://github.com/Sengoku11/commitpad.nvim> which allowed creating nice UI
 while creating new commit message with body.
 
+browser.nvim <https://github.com/lalitmee/browse.nvim>
+
 
 SIMILAR PLUGINS           *nvim-git-utils.nvim-nvim-git-utils-similar-plugins*
 
@@ -194,7 +195,6 @@ plugin has additional functionalities like:
 - Changing the last commit message
 - Staging all files and committing in one step
 - Integration with devmoji
-- Integration with opencode for AI commit messages
 
 Commitpad has a nice UI for committing but lacks customization. This plugin
 allows customizing:
@@ -209,7 +209,6 @@ DEPENDENCIES                 *nvim-git-utils.nvim-nvim-git-utils-dependencies*
 - telescope.nvim <https://github.com/nvim-telescope/telescope.nvim> - Fuzzy finder
 - diffview.nvim <https://github.com/sindrets/diffview.nvim> - Diff viewer
 - devmoji <https://github.com/folke/devmoji> (optional) - Emojify your commit messages
-- opencode <https://opencode.ai> (optional) - AI commit message generation
 
 
 LICENSE                           *nvim-git-utils.nvim-nvim-git-utils-license*
