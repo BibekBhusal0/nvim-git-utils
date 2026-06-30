@@ -14,6 +14,7 @@ Those commands were already present in my config so I think moving them to new p
   - Visual warning when over limit
   - Keyboard hints
   - Automatic emojification (with devmoji)
+- **AI-Powered Commit Messages** - Auto-generate commit messages from your diff using opencode
 - **Quick Staging & Commit** - Stage all changes and commit in one command
 - **Amend Commits** - Easily change the last commit message
 - **Open Changed Files** - Load all modified and untracked files into buffers
@@ -22,15 +23,17 @@ Those commands were already present in my config so I think moving them to new p
 
 ## Commands
 
-| Command                                | Description                          |
-| -------------------------------------- | ------------------------------------ |
-| `:GitCommit`                           | Commit staged changes with a message |
-| `:GitAddCommit`                        | Stage all changes and commit         |
-| `:GitChangeLastCommit`                 | Amend the last commit message        |
-| `:GitChanges` / `:GitOpenChangedFiles` | Open all changed files into buffers  |
-| `:GitOpen`                             | Open current file in browser         |
-| `:DiffviewFileHistoryTelescope`        | Select a file and view its history   |
-| `:DiffviewCompareBranchesTelescope`    | Compare branches in diffview         |
+| Command                                | Description                                 |
+| -------------------------------------- | ------------------------------------------- |
+| `:GitCommit`                           | Commit staged changes with a message        |
+| `:GitAddCommit`                        | Stage all changes and commit                |
+| `:GitChangeLastCommit`                 | Amend the last commit message               |
+| `:GitAICommit`                         | AI-generate commit message from staged diff |
+| `:GitAIAddCommit`                      | Stage all, then AI-generate commit message  |
+| `:GitChanges` / `:GitOpenChangedFiles` | Open all changed files into buffers         |
+| `:GitOpen`                             | Open current file in browser                |
+| `:DiffviewFileHistoryTelescope`        | Select a file and view its history          |
+| `:DiffviewCompareBranchesTelescope`    | Compare branches in diffview                |
 
 ## Installation
 
@@ -44,6 +47,8 @@ return {
     "GitAddCommit",
     "GitCommit",
     "GitChangeLastCommit",
+    "GitAICommit",
+    "GitAIAddCommit",
     "GitChanges",
     "GitOpen",
     "DiffviewCompareBranchesTelescope",
@@ -53,8 +58,10 @@ return {
     { "<leader>gc", ":GitAddCommit<CR>", desc = "Git add and commit" },
     { "<leader>gC", ":GitCommit<CR>", desc = "Git commit" },
     { "<leader>ge", ":GitChangeLastCommit<CR>", desc = "Git change last commit message" },
+    { "<leader>ga", ":GitAICommit<CR>", desc = "Git AI commit" },
+    { "<leader>gA", ":GitAIAddCommit<CR>", desc = "Git AI add and commit" },
     { "<leader>gg", ":GitChanges<CR>", desc = "Git open changed files" },
-    { "<leader>gg", ":GitOpen<CR>", desc = "Git open curret file in browser" },
+    { "<leader>gO", ":GitOpen<CR>", desc = "Git open current file in browser" },
     { "<leader>gdb", ":DiffviewCompareBranchesTelescope<CR>", desc = "Diffview compare branches" },
     {
       "<leader>gdF",
@@ -79,6 +86,9 @@ require("nvim-git-utils").setup({
     max_length = 72,
     format_message = require("nvim-git-utils.utils.emojify"), -- Uses devmoji to add emojis to commit messages
     hints = true,
+  },
+  ai_commit = {
+    prompt = "Generate a git commit message for the following diff. Keep the title under {max_length} characters and use the body for details when needed. Use conventional commits format (e.g., feat:, fix:, chore:, docs:, perf:, refactor:, style:, test:). Return only the commit message with no surrounding quotes or backticks.",
   },
 })
 ```
@@ -113,6 +123,13 @@ require("nvim-git-utils").setup({
 
     hints = true, -- Show keyboard shortcuts hints at the bottom of the popup
                   -- Set to false to hide the hints bar
+  },
+
+  -- AI commit message generation (requires opencode: https://opencode.ai)
+  ai_commit = {
+    -- Prompt template sent to opencode along with the diff.
+    -- {max_length} is replaced with commit_input.max_length at runtime.
+    prompt = "Generate a git commit message for the following diff. Keep the title under {max_length} characters and use the body for details when needed. Use conventional commits format (e.g., feat:, fix:, chore:, docs:, perf:, refactor:, style:, test:). Return only the commit message with no surrounding quotes or backticks.",
   },
 })
 ```
