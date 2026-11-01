@@ -17,7 +17,7 @@ Those commands were already present in my config so I think moving them to new p
 - **AI-Powered Commit Messages** - Auto-generate commit messages from your diff using opencode
 - **Quick Staging & Commit** - Stage all changes and commit in one command
 - **Amend Commits** - Easily change the last commit message
-- **Open Changed Files** - Load all modified and untracked files into buffers
+- **Open Changed Files** - Load all modified and untracked files into buffers, skipping ignored file types (video/audio by default)
 - **Open File in browser** - Quickly open current buffer into browser
 - **Telescope and Diffview Integration** - Browse file history and compare branches via telescope and diffview
 
@@ -90,6 +90,7 @@ require("nvim-git-utils").setup({
   ai_commit = {
     prompt = "Generate a git commit message for the following diff. Keep the title under {max_length} characters and use the body for details when needed. Use conventional commits format (e.g., feat:, fix:, chore:, docs:, perf:, refactor:, style:, test:). Return only the commit message with no surrounding quotes or backticks.",
   },
+  ignore = { extensions = {} }, -- Added to the built-in video/audio extensions
 })
 ```
 
@@ -130,6 +131,14 @@ require("nvim-git-utils").setup({
     -- Prompt template sent to opencode along with the diff.
     -- {max_length} is replaced with commit_input.max_length at runtime.
     prompt = "Generate a git commit message for the following diff. Keep the title under {max_length} characters and use the body for details when needed. Use conventional commits format (e.g., feat:, fix:, chore:, docs:, perf:, refactor:, style:, test:). Return only the commit message with no surrounding quotes or backticks.",
+  },
+
+  -- File types skipped by :GitChanges
+  ignore = {
+    -- Extra extensions on top of the built-in video/audio list.
+    -- Images are not ignored by default, so add them here if you don't edit them in Neovim:
+    -- extensions = { "png", "jpg", "jpeg", "gif", "webp", "svg" },
+    extensions = {},
   },
 })
 ```

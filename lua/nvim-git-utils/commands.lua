@@ -2,6 +2,7 @@ local run_git = require("nvim-git-utils.utils.run_git")
 local opts = require("nvim-git-utils.opts").opts
 local log = require("nvim-git-utils.utils.log")
 local commit_input = require("nvim-git-utils.utils.commit_input")
+local ignore = require("nvim-git-utils.utils.ignore")
 
 local M = {}
 
@@ -126,18 +127,18 @@ M.open_changed_files = function()
   local result = handle:read("*a")
   handle:close()
 
-  local count = 0
+  local files = {}
   for file in result:gmatch("[^\r\n]+") do
-    -- Check if file exists (prevents errors on deleted files)
-    if vim.fn.filereadable(file) == 1 then
+    -- Skip ignored file types and deleted files (which cannot be opened)
+    if not ignore.is_ignored(file) and vim.fn.filereadable(file) == 1 then
+      table.insert(files, file)
       vim.cmd("badd " .. vim.fn.fnameescape(file))
-      count = count + 1
     end
   end
 
-  if count > 0 then
-    log("Opened " .. count .. " changed files into buffers.")
-    local first_file = result:match("[^\r\n]+")
+  if #files > 0 then
+    log("Opened " .. #files .. " changed files into buffers.")
+    local first_file = files[1]
     vim.cmd("edit " .. vim.fn.fnameescape(first_file))
 
     if
