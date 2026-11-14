@@ -1,5 +1,5 @@
 *nvim-git-utils.nvim.txt*
-                              For NVIM v0.8.0    Last change: 2026 November 01
+                              For NVIM v0.8.0    Last change: 2026 November 14
 
 ==============================================================================
 Table of Contents                      *nvim-git-utils.nvim-table-of-contents*
@@ -187,6 +187,9 @@ CREDITS                           *nvim-git-utils.nvim-nvim-git-utils-credits*
 Main inspiration came from commitpad.nvim
 <https://github.com/Sengoku11/commitpad.nvim> which allowed creating nice UI
 while creating new commit message with body.
+
+Git commit message treesitter injection inspired by render-markdown.nvim
+<https://github.com/MeanderingProgrammer/render-markdown.nvim> (MIT License).
 
 browser.nvim <https://github.com/lalitmee/browse.nvim>
 
