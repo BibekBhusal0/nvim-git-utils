@@ -258,6 +258,10 @@ local function commit_input(title, callback, initial_value)
 
   layout:mount()
 
+  local gitcommit_highlight = require("nvim-git-utils.utils.gitcommit_highlight")
+  gitcommit_highlight.attach(title_buf)
+  gitcommit_highlight.attach(body_buf)
+
   if vim.go.spell then
     pcall(vim.api.nvim_set_option_value, "spell", true, { win = title_popup.winid })
     pcall(vim.api.nvim_set_option_value, "spell", true, { win = body_popup.winid })

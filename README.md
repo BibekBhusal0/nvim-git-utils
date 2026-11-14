@@ -147,6 +147,8 @@ require("nvim-git-utils").setup({
 
 Main inspiration came from [commitpad.nvim](https://github.com/Sengoku11/commitpad.nvim) which allowed creating nice UI while creating new commit message with body.
 
+Git commit message treesitter injection inspired by [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) (MIT License).
+
 [browser.nvim](https://github.com/lalitmee/browse.nvim)
 
 ## Similar Plugins
